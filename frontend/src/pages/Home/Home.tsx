@@ -15,7 +15,7 @@ import Configuracoes from "../../components/Configuracoes";
 import MinhasProvas from "../../components/Provas";
 import Analises from "../../components/Analises";
 
-export default function Principal() {
+export default function Home() {
   const [paginaSelecionada, setPaginaSelecionada] = useState("criar-prova");
 
   function renderizarPagina() {

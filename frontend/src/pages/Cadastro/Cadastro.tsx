@@ -59,7 +59,7 @@ export default function Cadastro() {
         <div>
           <p className="text-center">
             Já tem uma conta?{" "}
-            <a href="/login" className="font-bold text-[#38953e]">
+            <a href="/" className="font-bold text-[#38953e]">
               Entrar
             </a>
           </p>
