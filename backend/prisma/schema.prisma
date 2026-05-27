@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+model Professor {
+  id            String   @id @default(uuid())
+
+  fullName      String
+  email         String   @unique
+  passwordHash  String
+
+  provas        Prova[]
+  alunos        Aluno[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Aluno {
+  id             String   @id @default(uuid())
+
+  fullName       String
+  grade          String
+
+  registration   String   @unique
+
+  professorId    String
+  professor      Professor @relation(fields: [professorId], references: [id], onDelete: Cascade)
+
+  respostas      Resposta[]
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Prova {
+  id            String   @id @default(uuid())
+
+  title         String
+
+  formCode      String   @unique
+
+  questions     Json
+
+  professorId   String
+  professor     Professor @relation(fields: [professorId], references: [id], onDelete: Cascade)
+
+  respostas     Resposta[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Resposta {
+  id             String   @id @default(uuid())
+
+  alunoId        String
+  aluno          Aluno @relation(fields: [alunoId], references: [id], onDelete: Cascade)
+
+  provaId        String
+  prova          Prova @relation(fields: [provaId], references: [id], onDelete: Cascade)
+
+  answers        Json
+
+  grade          Float?
+
+  submittedAt    DateTime @default(now())
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([alunoId, provaId])
+}

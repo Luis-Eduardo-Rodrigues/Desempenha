@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+* {
+  font-family: Inter;
+}
+
+.background-login {
+  background-image: url("imgs/background-desempenha.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
