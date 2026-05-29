@@ -1,5 +1,9 @@
 import { ProfessorRepository } from "../repositories/professor.repository.ts";
+import dotenv from "dotenv";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+
+dotenv.config();
 
 export class ProfessorService {
   private repository: ProfessorRepository;
@@ -33,6 +37,46 @@ export class ProfessorService {
     const professor = await this.repository.create(fullName, email, pwHash);
 
     return professor;
+  }
+
+  async login(email: string, password: string) {
+    const user = await this.repository.findByEmail(email);
+
+    if (!user) {
+      throw new Error("Esse professor não está cadastrado!");
+    }
+
+    const comparePw = await bcrypt.compare(password, user.passwordHash);
+
+    if (!comparePw) {
+      throw new Error("Senha incorreta!");
+    }
+
+    const secret = process.env.SECRET_JWT;
+
+    if (!secret) {
+      throw new Error("JWT Secret não definida.");
+    }
+
+    const token = jwt.sign(
+      {
+        id: user.id,
+        email: user.email,
+      },
+      secret,
+      {
+        expiresIn: "1h",
+      },
+    );
+
+    return {
+      token,
+      user: {
+        id: user.id,
+        fullName: user.fullName,
+        email: user.email,
+      },
+    };
   }
 
   async update(id: string, fullName: string) {

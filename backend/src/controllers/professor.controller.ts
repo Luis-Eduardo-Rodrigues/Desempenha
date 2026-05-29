@@ -53,8 +53,28 @@ export class ProfessorController {
         data: professor,
       });
     } catch (error) {
+      console.log(error);
+
       return res.status(400).json({
         message: "Erro ao criar professor.",
+        error: error instanceof Error ? error.message : error,
+      });
+    }
+  }
+
+  async login(req: Request, res: Response) {
+    try {
+      const { email, password } = req.body;
+
+      const token = await this.service.login(email, password);
+
+      return res.status(200).json({
+        message: "Login realizado com sucesso!",
+        token,
+      });
+    } catch (error) {
+      return res.status(400).json({
+        message: "Erro ao fazer login.",
         error: error instanceof Error ? error.message : error,
       });
     }
