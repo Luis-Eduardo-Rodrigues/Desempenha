@@ -39,7 +39,7 @@ Arquitetura utilizada:
 - service
 - repository
 
-### brontend
+### frontend
 
 - react
 - tailwindcss
