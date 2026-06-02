@@ -14,9 +14,15 @@ import NovoAluno from "../../components/NovoAluno";
 import Configuracoes from "../../components/Configuracoes";
 import MinhasProvas from "../../components/Provas";
 import Analises from "../../components/Analises";
+import Unauthorized from "../Unauthorized/Unauthorized";
 
 export default function Home() {
   const [paginaSelecionada, setPaginaSelecionada] = useState("criar-prova");
+  const token = window.localStorage.getItem("token");
+
+  if (!token) {
+    return <Unauthorized />;
+  }
 
   function renderizarPagina() {
     switch (paginaSelecionada) {
