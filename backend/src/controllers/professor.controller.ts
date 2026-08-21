@@ -1,5 +1,10 @@
 import type { Request, Response } from "express";
 import { ProfessorService } from "../services/professor.service.ts";
+import {
+  loginSchema,
+  professorSchema,
+  professorUpdateSchema,
+} from "../schemas/request.schemas.ts";
 
 export class ProfessorController {
   private service: ProfessorService;
@@ -28,6 +33,10 @@ export class ProfessorController {
     try {
       const { id } = req.params;
 
+      if (req.user!.id !== id) {
+        return res.status(403).json({ message: "Acesso negado." });
+      }
+
       const professor = await this.service.findById(id as string);
 
       return res.status(200).json({
@@ -44,7 +53,7 @@ export class ProfessorController {
 
   async create(req: Request, res: Response) {
     try {
-      const { fullName, email, password } = req.body;
+      const { fullName, email, password } = professorSchema.parse(req.body);
 
       const professor = await this.service.create(fullName, email, password);
 
@@ -64,7 +73,7 @@ export class ProfessorController {
 
   async login(req: Request, res: Response) {
     try {
-      const { email, password } = req.body;
+      const { email, password } = loginSchema.parse(req.body);
 
       const token = await this.service.login(email, password);
 
@@ -83,7 +92,11 @@ export class ProfessorController {
   async update(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const { fullName } = req.body;
+      const { fullName } = professorUpdateSchema.parse(req.body);
+
+      if (req.user!.id !== id) {
+        return res.status(403).json({ message: "Acesso negado." });
+      }
 
       const updatedProfessor = await this.service.update(
         id as string,
@@ -105,6 +118,10 @@ export class ProfessorController {
   async remove(req: Request, res: Response) {
     try {
       const { id } = req.params;
+
+      if (req.user!.id !== id) {
+        return res.status(403).json({ message: "Acesso negado." });
+      }
 
       await this.service.remove(id as string);
 

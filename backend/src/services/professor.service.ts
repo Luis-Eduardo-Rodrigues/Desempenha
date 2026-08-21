@@ -12,8 +12,21 @@ export class ProfessorService {
     this.repository = new ProfessorRepository();
   }
 
+  private sanitize(professor: {
+    id: string;
+    fullName: string;
+    email: string;
+    passwordHash: string;
+    createdAt: Date;
+    updatedAt: Date;
+  }) {
+    const { passwordHash: _, ...safeProfessor } = professor;
+    return safeProfessor;
+  }
+
   async getAll() {
-    return this.repository.getAll();
+    const professors = await this.repository.getAll();
+    return professors.map((professor) => this.sanitize(professor));
   }
 
   async findById(id: string) {
@@ -23,7 +36,7 @@ export class ProfessorService {
       throw new Error("Nenhum professor encontrado!");
     }
 
-    return professor;
+    return this.sanitize(professor);
   }
 
   async create(fullName: string, email: string, password: string) {
@@ -36,7 +49,7 @@ export class ProfessorService {
     const pwHash = await bcrypt.hash(password, 10);
     const professor = await this.repository.create(fullName, email, pwHash);
 
-    return professor;
+    return this.sanitize(professor);
   }
 
   async login(email: string, password: string) {
@@ -82,7 +95,9 @@ export class ProfessorService {
   async update(id: string, fullName: string) {
     await this.findById(id);
 
-    return this.repository.update(id, fullName);
+    return this.repository.update(id, fullName).then((professor) =>
+      this.sanitize(professor),
+    );
   }
 
   async remove(id: string) {

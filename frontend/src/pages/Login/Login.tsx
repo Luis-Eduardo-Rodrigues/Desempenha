@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { ProfessorAPI } from "../../service/api";
 
@@ -19,6 +19,8 @@ export default function Login() {
 
       localStorage.setItem("token", response.token.token);
       localStorage.setItem("userId", response.token.user.id);
+      localStorage.setItem("userName", response.token.user.fullName);
+      localStorage.setItem("userEmail", response.token.user.email);
 
       navigate("/home");
     } catch (error) {
@@ -73,9 +75,9 @@ export default function Login() {
 
         <p className="text-center">
           Não tem uma conta?{" "}
-          <a href="/cadastro" className="font-bold text-[#38953e]">
+          <Link to="/cadastro" className="font-bold text-[#38953e]">
             Criar conta
-          </a>
+          </Link>
         </p>
       </form>
     </main>

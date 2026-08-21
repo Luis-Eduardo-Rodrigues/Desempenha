@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ProfessorAPI } from "../../service/api";
 
 export default function Cadastro() {
@@ -21,9 +21,14 @@ export default function Cadastro() {
         return;
       }
 
-      const response = await api.create(fullName, email, password);
+      await api.create(fullName, email, password);
 
-      localStorage.setItem("userId", response.data.id);
+      const loginResponse = await api.login(email, password);
+
+      localStorage.setItem("token", loginResponse.token.token);
+      localStorage.setItem("userId", loginResponse.token.user.id);
+      localStorage.setItem("userName", loginResponse.token.user.fullName);
+      localStorage.setItem("userEmail", loginResponse.token.user.email);
 
       navigate("/home");
     } catch (error) {
@@ -104,9 +109,9 @@ export default function Cadastro() {
 
         <p className="text-center">
           Já tem uma conta?{" "}
-          <a href="/login" className="font-bold text-[#38953e]">
+          <Link to="/" className="font-bold text-[#38953e]">
             Entrar
-          </a>
+          </Link>
         </p>
       </form>
     </main>

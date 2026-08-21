@@ -1,0 +1,15 @@
+# Dependencies and builds
+node_modules/
+dist/
+backend/generated/
+*.tsbuildinfo
+
+# Secrets and local configuration
+.env
+.env.local
+backend/.env
+frontend/.env
+
+# Editor and operating-system files
+.vscode/
+.DS_Store

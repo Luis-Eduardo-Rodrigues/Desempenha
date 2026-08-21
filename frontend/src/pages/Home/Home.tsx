@@ -9,19 +9,27 @@ import {
 } from "lucide-react";
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import NovaProva from "../../components/NovaProva";
 import NovoAluno from "../../components/NovoAluno";
 import Configuracoes from "../../components/Configuracoes";
 import MinhasProvas from "../../components/Provas";
 import Analises from "../../components/Analises";
 import Unauthorized from "../Unauthorized/Unauthorized";
+import { logout } from "../../service/api";
 
 export default function Home() {
+  const navigate = useNavigate();
   const [paginaSelecionada, setPaginaSelecionada] = useState("criar-prova");
   const token = window.localStorage.getItem("token");
 
   if (!token) {
     return <Unauthorized />;
+  }
+
+  function handleLogout() {
+    logout();
+    navigate("/");
   }
 
   function renderizarPagina() {
@@ -46,7 +54,7 @@ export default function Home() {
     }
   }
 
-  function menuClass(nomePagina) {
+  function menuClass(nomePagina: string) {
     return `
       p-4 
       text-lg 
@@ -115,7 +123,10 @@ export default function Home() {
           </button>
         </div>
         <div className="absolute bottom-8 w-full flex items-center justify-center">
-          <button className="w-[90%] py-4 bg-red-600 flex items-center justify-center gap-3 rounded-md transition hover:bg-red-700 hover:cursor-pointer">
+          <button
+            onClick={handleLogout}
+            className="w-[90%] py-4 bg-red-600 flex items-center justify-center gap-3 rounded-md transition hover:bg-red-700 hover:cursor-pointer"
+          >
             <span className="font-bold text-white text-lg">Sair</span>
 
             <LogOut />
